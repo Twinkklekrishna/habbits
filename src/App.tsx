@@ -58,8 +58,8 @@ export default function App() {
   const isPlanningWindow = () => {
     const hours = now.getHours();
     const minutes = now.getMinutes();
-    // 10:50 PM to 12:00 AM is the window for planning tomorrow
-    return (hours === 22 && minutes >= 50) || hours === 23;
+    // 11:50 PM to 11:59 PM is the window for planning tomorrow
+    return hours === 23 && minutes >= 50;
   };
 
   const todayDate = () => formatISO(now);
@@ -217,6 +217,12 @@ export default function App() {
 
   const canPlan = isPlanningWindow();
 
+  useEffect(() => {
+    if (!canPlan && isAddModalOpen) {
+      setIsAddModalOpen(false);
+    }
+  }, [canPlan, isAddModalOpen]);
+
   return (
     <div className="flex h-screen bg-orbit-bg overflow-hidden text-orbit-ink">
       {/* Sidebar - Hidden on mobile */}
@@ -237,7 +243,9 @@ export default function App() {
                   {canPlan ? <span className="text-[8px] bg-emerald-500 text-white px-1.5 rounded-full font-bold uppercase tracking-tighter shadow-sm animate-pulse">Open</span> : <span className="text-[8px] bg-slate-700 text-slate-400 px-1.5 rounded-full font-bold uppercase tracking-tighter">Locked</span>}
                 </div>
                 <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
-                  {canPlan ? "You can now plan for tomorrow. Add new habits or select from yesterday." : "Planning unlocks from 10:50 PM to 12:00 AM."}
+                  {canPlan
+                    ? "You can now plan for tomorrow. Add new habits or select from yesterday."
+                    : "Planning unlocks daily from 11:50 PM to 11:59 PM."}
                 </p>
                 {canPlan && (
                   <button 
@@ -361,7 +369,7 @@ export default function App() {
                 </div>
                 <h3 className="text-xl font-bold text-orbit-ink mb-2">Registration Locked</h3>
                 <p className="text-slate-400 text-sm max-w-xs mx-auto font-medium leading-relaxed">
-                  You can only add habits during the planning window (10:50 PM to 12:00 AM).
+                  You can only add habits during the planning window (11:50 PM to 11:59 PM).
                 </p>
                 <button
                   onClick={startNewNote}
@@ -375,7 +383,7 @@ export default function App() {
                 <table className="w-full text-left border-collapse min-w-[700px]">
                   <thead>
                     <tr className="bg-slate-900/50">
-                      <th className="p-5 font-bold text-[11px] text-slate-500 uppercase tracking-widest border-b border-orbit-border w-64 sticky left-0 bg-[#121214] z-10">Planned Intent</th>
+                      <th className="p-5 font-bold text-[11px] text-slate-500 uppercase tracking-widest border-b border-orbit-border w-64 sticky left-0 bg-orbit-surface z-10">Planned Intent</th>
                       {weekDays.map((day) => (
                         <th key={day.toISOString()} className={`p-5 font-bold text-[11px] border-b border-orbit-border text-center uppercase tracking-widest ${isToday(day) ? 'bg-indigo-900/10 text-indigo-400' : 'text-slate-500'}`}>
                           {getDayName(day)}
@@ -389,7 +397,7 @@ export default function App() {
                       const stats = getStats(habit.id);
                       return (
                         <tr key={habit.id} className="group hover:bg-slate-800/20 transition-colors">
-                          <td className="p-5 sticky left-0 bg-[#121214] z-10 group-hover:bg-[#18181B] transition-colors border-r border-orbit-border/50">
+                          <td className="p-5 sticky left-0 bg-orbit-surface z-10 group-hover:bg-orbit-card transition-colors border-r border-orbit-border/50">
                             <div className="flex items-center gap-4">
                               <div className="w-10 h-10 rounded-lg flex items-center justify-center text-lg shadow-lg ring-1 ring-white/5" style={{ backgroundColor: `${habit.color}20`, color: habit.color }}>
                                 <CheckCircle2 className="w-5 h-5" />
@@ -409,15 +417,15 @@ export default function App() {
                               const dateStr = formatISO(day);
                               const comp = habit.completions[dateStr];
                               const isPlanned = !!comp;
-                              const isInteractable = isToday(day);
+                              const isInteractable = isPlanned;
 
                               return (
                                 <td key={dateStr} className={`p-1 border-r border-orbit-border/30 last:border-r-0 ${isToday(day) ? 'bg-indigo-900/10' : ''}`}>
                                    <div className="w-full h-24 flex flex-col items-center justify-center relative group/cell gap-2">
                                      <button
-                                      onClick={() => isInteractable && isPlanned && handleToggle(habit.id, dateStr)}
-                                      disabled={!isInteractable || !isPlanned}
-                                      className={`w-10 h-10 flex flex-col items-center justify-center transition-all relative ${!isInteractable ? 'opacity-20 cursor-not-allowed' : isPlanned ? 'cursor-pointer' : 'cursor-default'}`}
+                                      onClick={() => isInteractable && handleToggle(habit.id, dateStr)}
+                                      disabled={!isInteractable}
+                                      className={`w-10 h-10 flex flex-col items-center justify-center transition-all relative ${!isInteractable ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}`}
                                     >
                                       {isPlanned ? (comp.completed ? (<motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-indigo-500 shadow-lg shadow-indigo-500/20"><CheckCircle2 className="w-4 h-4 text-white" /></motion.div>) : (<div className="w-8 h-8 rounded-lg border-2 border-indigo-500/40 group-hover/cell:border-indigo-500 transition-all flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-indigo-500/40 group-hover/cell:bg-indigo-500" /></div>)) : (<div className="w-6 h-6 rounded-lg border border-slate-800 border-dashed opacity-40" />)}
                                     </button>

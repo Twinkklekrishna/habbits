@@ -9,8 +9,8 @@
   --orbit-bg: #fff6fb;
   --orbit-surface: #ffeef7;
   --orbit-card: #ffe3f1;
-  --orbit-ink: #000000;
-  --orbit-muted: #000000;
+  --orbit-ink: #2a1630;
+  --orbit-muted: #5a3a63;
   --orbit-border: #f2bfd9;
   --orbit-accent: #ec4899;
   --orbit-accent-hover: #db2777;
@@ -20,24 +20,47 @@
   --slate-100: #ffeff7;
   --slate-200: #ffddeb;
   --slate-300: #fbc5de;
-  --slate-400: #000000;
-  --slate-500: #000000;
-  --slate-600: #a85f86;
-  --slate-700: #8c476d;
-  --slate-800: #753a5c;
-  --slate-900: #5f2f4c;
-  --slate-950: #481f39;
+  --slate-400: #8b5f7f;
+  --slate-500: #7a4b6d;
+  --slate-600: #f6dfe9;
+  --slate-700: #f2d4e2;
+  --slate-800: #ecc7d9;
+  --slate-900: #e5b9cf;
+  --slate-950: #dca9c3;
 
   /* Retheme indigo scale so existing indigo classes become pink accents */
   --indigo-100: #ffe4f2;
   --indigo-200: #ffc8e3;
   --indigo-300: #ff9ccc;
-  --indigo-400: #000000;
+  --indigo-400: #d9468f;
   --indigo-500: #ec4899;
   --indigo-600: #db2777;
   --indigo-700: #be185d;
   --indigo-800: #9d174d;
   --indigo-900: #831843;
+
+  /* Tailwind v4 color token overrides (also affects /opacity variants) */
+  --color-slate-50: #fff7fb;
+  --color-slate-100: #ffeff7;
+  --color-slate-200: #ffddeb;
+  --color-slate-300: #fbc5de;
+  --color-slate-400: #8b5f7f;
+  --color-slate-500: #7a4b6d;
+  --color-slate-600: #f6dfe9;
+  --color-slate-700: #f2d4e2;
+  --color-slate-800: #ecc7d9;
+  --color-slate-900: #e5b9cf;
+  --color-slate-950: #dca9c3;
+
+  --color-indigo-100: #ffe4f2;
+  --color-indigo-200: #ffc8e3;
+  --color-indigo-300: #ff9ccc;
+  --color-indigo-400: #d9468f;
+  --color-indigo-500: #ec4899;
+  --color-indigo-600: #db2777;
+  --color-indigo-700: #be185d;
+  --color-indigo-800: #9d174d;
+  --color-indigo-900: #831843;
 }
 
 body {
@@ -75,7 +98,7 @@ body {
 .text-emerald-200,
 .text-emerald-300,
 .text-white {
-  color: #000000;
+  color: var(--orbit-ink);
 }
 
 .border-slate-700 { border-color: var(--slate-700); }
@@ -101,7 +124,7 @@ body {
 .text-indigo-700,
 .text-indigo-800,
 .text-indigo-900 {
-  color: #000000;
+  color: var(--orbit-ink);
 }
 
 .notion-scroller::-webkit-scrollbar {
