@@ -188,9 +188,9 @@ export default function App() {
     if (!habit) return;
 
     const comp = habit.completions[date];
-    if (!comp) return; // Cannot mark if not planned
+    const nextCompleted = comp ? !comp.completed : true;
 
-    updateCompletion(habitId, date, !comp.completed, comp.notes);
+    updateCompletion(habitId, date, nextCompleted, comp?.notes);
   };
 
   const saveNotesOnly = () => {
@@ -417,7 +417,9 @@ export default function App() {
                               const dateStr = formatISO(day);
                               const comp = habit.completions[dateStr];
                               const isPlanned = !!comp;
-                              const isInteractable = isPlanned;
+                              const isScheduledForDay = habit.frequency === 'daily' || habit.daysOfWeek.includes(day.getDay());
+                              const isInteractable = isPlanned || isScheduledForDay;
+                              const isCompleted = comp?.completed ?? false;
 
                               return (
                                 <td key={dateStr} className={`p-1 border-r border-orbit-border/30 last:border-r-0 ${isToday(day) ? 'bg-indigo-900/10' : ''}`}>
@@ -427,7 +429,7 @@ export default function App() {
                                       disabled={!isInteractable}
                                       className={`w-10 h-10 flex flex-col items-center justify-center transition-all relative ${!isInteractable ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}`}
                                     >
-                                      {isPlanned ? (comp.completed ? (<motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-indigo-500 shadow-lg shadow-indigo-500/20"><CheckCircle2 className="w-4 h-4 text-white" /></motion.div>) : (<div className="w-8 h-8 rounded-lg border-2 border-indigo-500/40 group-hover/cell:border-indigo-500 transition-all flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-indigo-500/40 group-hover/cell:bg-indigo-500" /></div>)) : (<div className="w-6 h-6 rounded-lg border border-slate-800 border-dashed opacity-40" />)}
+                                      {isInteractable ? (isCompleted ? (<motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative w-8 h-8 flex flex-col items-center justify-center rounded-lg bg-indigo-500 shadow-lg shadow-indigo-500/20"><CheckCircle2 className="w-4 h-4 text-white" /></motion.div>) : (<div className="w-8 h-8 rounded-lg border-2 border-indigo-500/40 group-hover/cell:border-indigo-500 transition-all flex items-center justify-center"><div className="w-2 h-2 rounded-full bg-indigo-500/40 group-hover/cell:bg-indigo-500" /></div>)) : (<div className="w-6 h-6 rounded-lg border border-slate-800 border-dashed opacity-40" />)}
                                     </button>
                                    </div>
                                 </td>
